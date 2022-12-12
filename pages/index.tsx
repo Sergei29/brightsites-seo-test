@@ -1,16 +1,38 @@
-import type {
-  GetServerSideProps,
-  InferGetServerSidePropsType,
-  NextPage,
-} from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
-import data from "../data.json";
+import { readFile } from "fs/promises";
+import path from "path";
 
-const Article: NextPage = ({
-  extra,
-  products,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+import { ArticleType, ErrorResponse } from "../types";
+import styles from "../styles/Home.module.css";
+
+export const getServerSideProps: GetServerSideProps<
+  ArticleType | ErrorResponse
+> = async (context) => {
+  context.res.setHeader(
+    "Cache-Control",
+    "public,  s-maxage=300, stale-while-revalidate=59"
+  );
+  context.res.setHeader("Content-Security-Policy", `frame-ancestors 'self';`);
+
+  try {
+    const data = await readFile(
+      path.join(process.cwd(), "/data.json"),
+      "utf-8"
+    );
+    const article = JSON.parse(data) as ArticleType;
+
+    return {
+      props: {
+        ...article,
+      },
+    };
+  } catch (err) {
+    return { props: { error: "Failed to fetch article data" } };
+  }
+};
+
+const Article: NextPage<ArticleType> = ({ extra, products }) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -27,21 +49,4 @@ const Article: NextPage = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  context.res.setHeader(
-    "Cache-Control",
-    "public,  s-maxage=300, stale-while-revalidate=59"
-  );
-  context.res.setHeader("Content-Security-Policy", `frame-ancestors 'self';`);
-
-  try {
-    return {
-      props: {
-        ...data,
-      },
-    };
-  } catch (err) {
-    return { props: { data: "err" } };
-  }
-};
 export default Article;
