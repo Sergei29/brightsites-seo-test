@@ -1,38 +1,48 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
-import { readFile } from "fs/promises";
-import path from "path";
 
-import { ArticleType, ErrorResponse } from "../types";
+import { ErrorResponse } from "@/types";
+import { fetchArticleData, getDataSEO } from "@/lib";
+
 import styles from "../styles/Home.module.css";
 
-export const getServerSideProps: GetServerSideProps<
-  ArticleType | ErrorResponse
-> = async (context) => {
+type PageProps = ReturnType<typeof getDataSEO> & ErrorResponse;
+
+type ServerSidePropsFn = GetServerSideProps<
+  ReturnType<typeof getDataSEO> | ErrorResponse
+>;
+
+/**
+ * I would argue about using the SSR here for the content fetching, I would suggest to go for `GetStaticProps` with incremental re-generation, which may be a little better for performance IF we shall fetch LARGE amount of content.
+ */
+export const getServerSideProps: ServerSidePropsFn = async (context) => {
   context.res.setHeader(
     "Cache-Control",
     "public,  s-maxage=300, stale-while-revalidate=59"
   );
   context.res.setHeader("Content-Security-Policy", `frame-ancestors 'self';`);
 
-  try {
-    const data = await readFile(
-      path.join(process.cwd(), "/data.json"),
-      "utf-8"
-    );
-    const article = JSON.parse(data) as ArticleType;
+  const { data, error } = await fetchArticleData();
 
+  if (!!data && !error) {
+    const pageData = getDataSEO(data);
     return {
       props: {
-        ...article,
+        ...pageData,
       },
     };
-  } catch (err) {
-    return { props: { error: "Failed to fetch article data" } };
   }
+
+  return { props: { error: error as string } };
 };
 
-const Article: NextPage<ArticleType> = ({ extra, products }) => {
+const Article: NextPage<PageProps> = ({
+  pageSubTitle,
+  pageTitle,
+  productsList,
+  productsStructuredData,
+  error,
+}) => {
   return (
     <div className={styles.container}>
       <Head>

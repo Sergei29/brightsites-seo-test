@@ -1,5 +1,9 @@
-import { Enitity, ProductData, ArticleType, StructuredObject } from "../types";
+import { readFile } from "fs/promises";
+import path from "path";
 
+import { Enitity, ProductData, ArticleType, StructuredObject } from "@/types";
+
+const DEFAULT_ERROR_MESSAGE = "Failed to fetch article data";
 const { ItemList, ListItem, Product, Review, Rating, Person } =
   StructuredObject;
 
@@ -107,4 +111,24 @@ export const getDataSEO = (article: ArticleType) => {
     pageTitle: title,
     pageSubTitle: titleShort,
   };
+};
+
+export const fetchArticleData = async (): Promise<{
+  data: ArticleType | null;
+  error: string | null;
+}> => {
+  try {
+    const data = await readFile(
+      path.join(process.cwd(), "/data.json"),
+      "utf-8"
+    );
+    const article = JSON.parse(data) as ArticleType;
+
+    return { data: article, error: null };
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : DEFAULT_ERROR_MESSAGE;
+
+    return { data: null, error: message };
+  }
 };
