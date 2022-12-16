@@ -125,7 +125,16 @@ export type Extra = {
   products: Enitity<ProductData>[];
 };
 
+export type AuthorType = { name: string; id: number } & Record<string, any>;
+
 export type ArticleType = {
+  type: string;
+  id: string;
+  title: string;
+  titleShort: string;
+  titleSocial: string;
+  titleSEO: string;
+  authors: AuthorType[];
   products: Enitity<ProductData>[];
   extra: Extra;
 } & Record<string, any>;
@@ -133,3 +142,12 @@ export type ArticleType = {
 export type ErrorResponse = {
   error: string;
 };
+
+export enum StructuredObject {
+  ItemList = "ItemList",
+  ListItem = "ListItem",
+  Review = "Review",
+  Rating = "Rating",
+  Person = "Person",
+  Product = "Product",
+}
