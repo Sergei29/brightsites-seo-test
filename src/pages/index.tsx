@@ -1,35 +1,33 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 
-import { ErrorResponse } from "@/types";
 import { fetchArticleData, getDataSEO } from "@/lib";
+import { ErrorResponse } from "@/types";
+import { DELAY } from "@/constants";
 
 import styles from "../styles/Home.module.css";
 
 type PageProps = ReturnType<typeof getDataSEO> & ErrorResponse;
 
-type ServerSidePropsFn = GetServerSideProps<
+type GetStaticPropsFn = GetStaticProps<
   ReturnType<typeof getDataSEO> | ErrorResponse
 >;
 
 /**
- * I would argue about using the SSR here for the content fetching, I would suggest to go for `GetStaticProps` with incremental re-generation, which may be a little better for performance IF we shall fetch LARGE amount of content.
+ * I would suggest to use the SSG( or rather ISR) here for the content generation, which may be a little better for performance IF we shall fetch LARGE amount of content.
+ * the custom headers are set in the `next.config.js`
  */
-export const getServerSideProps: ServerSidePropsFn = async (context) => {
-  context.res.setHeader(
-    "Cache-Control",
-    "public,  s-maxage=300, stale-while-revalidate=59"
-  );
-  context.res.setHeader("Content-Security-Policy", `frame-ancestors 'self';`);
-
+export const getStaticProps: GetStaticPropsFn = async (_context) => {
   const { data, error } = await fetchArticleData();
 
   if (!!data && !error) {
     const pageData = getDataSEO(data);
+
     return {
       props: {
         ...pageData,
       },
+      revalidate: DELAY.MINUTES_10,
     };
   }
 
