@@ -6,7 +6,7 @@ import { ProductData } from "@/types";
 import ReviewNotes from "../ReviewNotes";
 import classes from "./ProductCard.module.css";
 
-type Props = {
+export type Props = {
   pros: string[];
   cons: string[];
 } & Pick<ProductData, "title" | "image" | "price" | "vendorLink" | "rating">;
@@ -23,7 +23,7 @@ const ProductCard = ({
   const { imageSize } = image.data.extra;
 
   return (
-    <div className={classes.card}>
+    <div className={classes.card} role="article">
       <a href={vendorLink} role="link">
         <Image
           src={image.data.url}
