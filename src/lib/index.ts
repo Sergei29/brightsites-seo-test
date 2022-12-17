@@ -3,7 +3,6 @@ import path from "path";
 
 import { Enitity, ProductData, ArticleType, StructuredObject } from "@/types";
 
-const DEFAULT_ERROR_MESSAGE = "Failed to fetch article data";
 const { ItemList, ListItem, Product, Review, Rating, Person } =
   StructuredObject;
 
@@ -13,17 +12,11 @@ type GetListItemParams = {
   author: string;
 };
 
-/**
- * O(n)
- */
 const getProductsList = (
   productsInitialList: Enitity<ProductData>[]
 ): ProductData[] =>
   productsInitialList.map((currentProductInfo) => currentProductInfo.data);
 
-/**
- * O(n)
- */
 const getProsAndConsListItems = (prosAndCons: string[]) =>
   prosAndCons.map((currentNote, index) => ({
     "@type": ListItem,
@@ -31,9 +24,6 @@ const getProsAndConsListItems = (prosAndCons: string[]) =>
     name: currentNote,
   }));
 
-/**
- * O(n)
- */
 const getListItemFromProduct = ({
   product,
   currentPosition,
@@ -91,7 +81,7 @@ export const getProductsStructuredData = (
 };
 
 /**
- * @descrioption agggregates the fetched bulk of data in order to collect the page essential data
+ * @descrioption aggregates the fetched bulk of data in order to collect the page essential data
  * @param {object} article article object
  * @returns {object} payload including seo structured data and page content
  */
@@ -127,7 +117,7 @@ export const fetchArticleData = async (): Promise<{
     return { data: article, error: null };
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : DEFAULT_ERROR_MESSAGE;
+      error instanceof Error ? error.message : "Failed to fetch article data";
 
     return { data: null, error: message };
   }

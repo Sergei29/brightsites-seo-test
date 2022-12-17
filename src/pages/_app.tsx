@@ -4,12 +4,10 @@ import Layout from "@/components/Layout";
 
 import "../styles/globals.css";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
-  );
-}
+const App = ({ Component, pageProps }: AppProps) => (
+  <Layout>
+    <Component {...pageProps} />
+  </Layout>
+);
 
-export default MyApp;
+export default App;

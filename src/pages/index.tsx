@@ -44,50 +44,48 @@ const Article: NextPage<PageProps> = ({
   productsList,
   productsStructuredData,
   error,
-}) => {
-  return (
-    <>
-      <Head>
-        {<title>{!error ? head.title : error}</title>}
-        <RenderWhen isTrue={!error}>
-          {head?.meta &&
-            head.meta.map((currentMetaTag) => (
-              <meta
-                key={currentMetaTag.id}
-                name={currentMetaTag.name}
-                content={currentMetaTag.content}
-              />
-            ))}
-          <script
-            key="structured-data"
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(productsStructuredData),
-            }}
-          />
-        </RenderWhen>
-      </Head>
-
-      <PageTitle title={pageTitle} subTitle={pageSubTitle} error={error} />
+}) => (
+  <>
+    <Head>
+      <title>{!error ? head.title : error}</title>
       <RenderWhen isTrue={!error}>
-        <div className={classes.grid}>
-          {productsList &&
-            productsList.map((currentProduct) => (
-              <ProductCard
-                key={currentProduct.id}
-                title={currentProduct.title}
-                image={currentProduct.image}
-                price={currentProduct.price}
-                vendorLink={currentProduct.vendorLink}
-                rating={currentProduct.rating}
-                pros={currentProduct.information.pros.pros}
-                cons={currentProduct.information.cons.cons}
-              />
-            ))}
-        </div>
+        {head?.meta &&
+          head.meta.map((currentMetaTag) => (
+            <meta
+              key={currentMetaTag.id}
+              name={currentMetaTag.name}
+              content={currentMetaTag.content}
+            />
+          ))}
+        <script
+          key="structured-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(productsStructuredData),
+          }}
+        />
       </RenderWhen>
-    </>
-  );
-};
+    </Head>
+
+    <PageTitle title={pageTitle} subTitle={pageSubTitle} error={error} />
+    <RenderWhen isTrue={!error}>
+      <div className={classes.grid}>
+        {productsList &&
+          productsList.map((currentProduct) => (
+            <ProductCard
+              key={currentProduct.id}
+              title={currentProduct.title}
+              image={currentProduct.image}
+              price={currentProduct.price}
+              vendorLink={currentProduct.vendorLink}
+              rating={currentProduct.rating}
+              pros={currentProduct.information.pros.pros}
+              cons={currentProduct.information.cons.cons}
+            />
+          ))}
+      </div>
+    </RenderWhen>
+  </>
+);
 
 export default Article;
