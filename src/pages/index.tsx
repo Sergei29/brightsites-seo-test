@@ -1,12 +1,11 @@
 import type { GetStaticProps, NextPage } from "next";
-import Script from "next/script";
 import Head from "next/head";
 
 import { fetchArticleData, getDataSEO } from "@/lib";
 import { ErrorResponse } from "@/types";
 import { DELAY } from "@/constants";
 
-import styles from "../styles/Home.module.css";
+import classes from "@/styles/Home.module.css";
 
 type PageProps = ReturnType<typeof getDataSEO> & ErrorResponse;
 
@@ -44,7 +43,7 @@ const Article: NextPage<PageProps> = ({
   error,
 }) => {
   return (
-    <div className={styles.container}>
+    <>
       <Head>
         <title>{head.title}</title>
         {head.meta.map((currentMetaTag) => (
@@ -54,7 +53,6 @@ const Article: NextPage<PageProps> = ({
             content={currentMetaTag.content}
           />
         ))}
-        <link rel="icon" href="/favicon.ico" />
         <script
           key="structured-data"
           type="application/ld+json"
@@ -64,11 +62,9 @@ const Article: NextPage<PageProps> = ({
         />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>Seo brightsites test</h1>
-      </main>
-      <footer className={styles.footer}></footer>
-    </div>
+      <h1 className={classes.title}>{pageTitle}</h1>
+      <p className={classes.description}>{pageSubTitle}</p>
+    </>
   );
 };
 
