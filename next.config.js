@@ -22,6 +22,9 @@ const nextConfig = {
       },
     ];
   },
+  images: {
+    domains: ["static.independent.co.uk"],
+  },
 };
 
 module.exports = nextConfig;
