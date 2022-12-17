@@ -1,4 +1,5 @@
 import type { GetStaticProps, NextPage } from "next";
+import Script from "next/script";
 import Head from "next/head";
 
 import { fetchArticleData, getDataSEO } from "@/lib";
@@ -36,6 +37,7 @@ export const getStaticProps: GetStaticPropsFn = async (_context) => {
 
 const Article: NextPage<PageProps> = ({
   pageSubTitle,
+  head,
   pageTitle,
   productsList,
   productsStructuredData,
@@ -44,9 +46,22 @@ const Article: NextPage<PageProps> = ({
   return (
     <div className={styles.container}>
       <Head>
-        <title>Brightsites seo test</title>
-        <meta name="description" content="Brightsites seo test" />
+        <title>{head.title}</title>
+        {head.meta.map((currentMetaTag) => (
+          <meta
+            key={currentMetaTag.id}
+            name={currentMetaTag.name}
+            content={currentMetaTag.content}
+          />
+        ))}
         <link rel="icon" href="/favicon.ico" />
+        <script
+          key="structured-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(productsStructuredData),
+          }}
+        />
       </Head>
 
       <main className={styles.main}>
