@@ -1,3 +1,7 @@
+## Deployed version
+
+https://brightsites-seo-test.vercel.app/
+
 ## Description
 
 Using the data returned from the API, please add structured data with a review snippet to the page so that Google can display the product pros and cons.
