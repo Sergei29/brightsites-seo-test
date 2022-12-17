@@ -1,0 +1,11 @@
+.notes {
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.notes h4,
+.notes ul {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
